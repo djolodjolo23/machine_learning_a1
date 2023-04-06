@@ -76,7 +76,8 @@ distances = np.sqrt(np.sum((meshgrid_array[:, np.newaxis, :] - TRAIN_data) ** 2,
 sorted_distances = np.sort(distances, axis=1)
 sorted_indices = np.argsort(distances, axis=1)
 sorted_labels = TRAIN_labels[sorted_indices]
-
+print(len(distances))
+print(len(meshgrid_array))
 meshgrid_array_full = np.zeros((len(distances), 6))
 meshgrid_array_full[:, 0] = xx_flat
 meshgrid_array_full[:, 1] = yy_flat
@@ -84,8 +85,8 @@ counter = 0
 # finding k nearest neighbors mesh grid points
 for k in k_values:
     closest_neighbour = []
-    labels_temp = np.empty(len(meshgrid_array))
-    for i in range(len(meshgrid_array)):
+    labels_temp = np.empty(len(distances))
+    for i in range(len(distances)):
         if k == 1:
             closest_neighbour = sorted_labels[:, k - 1]
             label = 1 if closest_neighbour[i] == 1 else 0
@@ -94,14 +95,37 @@ for k in k_values:
             prediction = majority_vote(closest_neighbour[i])
             label = 1 if prediction == 1 else 0
         labels_temp[i] = label
-    temporary_array = labels_temp.flatten()
     meshgrid_array_full[:, counter + 2] = labels_temp.flatten()
     counter = counter + 1
-
-
-
+def knn(k_values, minuend_data, subtrahend_data):
+    distances = np.sqrt(np.sum((minuend_data[:, np.newaxis, :] - subtrahend_data) ** 2, axis=-1))
+    sorted_distances = np.sort(distances, axis=1)
+    sorted_indices = np.argsort(distances, axis=1)
+    sorted_labels = TRAIN_labels[sorted_indices]
+    array_full = np.zeros((len(distances), 6))
+    array_full[:, 0] = minuend_data[:, 0]
+    array_full[:, 1] = minuend_data[:, 1]
+    counter = 0
+    for k in k_values:
+        closest_neighbour = []
+        labels_temp = np.empty(len(distances)) # this needs to be changed
+        for i in range(len(distances)):
+            if k == 1:
+                closest_neighbour = sorted_labels[:, k - 1]
+                label = 1 if closest_neighbour[i] == 1 else 0
+            else:
+                closest_neighbour = sorted_labels[:, :k]
+                prediction = majority_vote(closest_neighbour[i])
+                label = 1 if prediction == 1 else 0
+            labels_temp[i] = label
+        array_full[:, counter + 2] = labels_temp.flatten()
+        counter = counter + 1
+    return array_full
 # plotting 4 subplots with their decision boundary, based on the KNN for each
 # point in the mesh area
+dis = knn(k_values, TRAIN_data, TRAIN_data)
+print(dis)
+
 start_val = 2
 starting_ax = 1
 x = meshgrid_array_full[:, 0]
