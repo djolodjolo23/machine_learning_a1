@@ -66,7 +66,7 @@ x_min, x_max = TRAIN_data[:, 0].min() - 0.1, TRAIN_data[:, 0].max() + 0.1
 y_min, y_max = TRAIN_data[:, 1].min() - 0.1, TRAIN_data[:, 1].max() + 0.1
 
 ## create meshgird wwith a step of 0.05
-xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.05), np.arange(y_min, y_max, 0.05))
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01), np.arange(y_min, y_max, 0.01))
 xx_flat = xx.ravel()
 yy_flat = yy.ravel()
 meshgrid_array = np.column_stack((xx_flat, yy_flat))
@@ -96,12 +96,25 @@ for k in k_values:
         labels_temp[i] = label
     temporary_array = labels_temp.flatten()
     meshgrid_array_full[:, counter + 2] = labels_temp.flatten()
-    #meshgrid_array_full = np.vstack((meshgrid_array_full, temporary_array))
     counter = counter + 1
 
+print(meshgrid_array_full.shape)
 '''''
 fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
 for k, ax in zip(k_values, axs.flatten()):
     ax.contourf(xx, yy, TRAIN_labels, cmap=plt.cm.Paired)
     ax.scatter(TRAIN_data[:, 0], TRAIN_data[:, 1], c=TRAIN_labels, cmap=plt.cm.Paired, edgecolors= 'k')
 '''''
+
+x = meshgrid_array_full[:, 0]
+y = meshgrid_array_full[:, 1]
+
+knn = meshgrid_array_full[:, 3]
+
+mask = knn == 1
+
+
+plt.scatter(x[mask], y[mask], c="blue", label="OK")
+plt.scatter(x[~mask], y[~mask], c="red", label="FAIL")
+plt.legend()
+plt.show()
