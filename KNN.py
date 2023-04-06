@@ -97,6 +97,7 @@ for k in k_values:
         labels_temp[i] = label
     meshgrid_array_full[:, counter + 2] = labels_temp.flatten()
     counter = counter + 1
+
 def knn(k_values, minuend_data, subtrahend_data):
     distances = np.sqrt(np.sum((minuend_data[:, np.newaxis, :] - subtrahend_data) ** 2, axis=-1))
     sorted_distances = np.sort(distances, axis=1)
