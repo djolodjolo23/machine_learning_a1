@@ -10,6 +10,7 @@ def majority_vote(arr):
     else:
         return 0
 
+
 def euc_distance_for_two_points(x1, x2):
     return np.sqrt(np.sum((x1 - x2) ** 2))
 
@@ -22,7 +23,7 @@ okOrFailedVector = microchips.iloc[:, 2]
 
 markers = {1: 'o', 0: 'x'}
 for value in set(okOrFailedVector):
-    mask = (value == okOrFailedVector)
+    mask = value == okOrFailedVector
     plt.scatter(xdata[mask], ydata[mask], marker=markers[value], label=value)
 plt.xlabel('X')
 plt.ylabel('Y')
@@ -37,13 +38,13 @@ TEST_data = np.array([[-0.3, 1.0],
 k_values = [1, 3, 5, 7]
 
 distances = np.sqrt(np.sum((TEST_data[:, np.newaxis, :] - TRAIN_data) ** 2, axis=-1))
-#sorted_distances = np.sort(distances, axis=1)
+# sorted_distances = np.sort(distances, axis=1)
 sorted_indices = np.argsort(distances, axis=1)
 sorted_labels = TRAIN_labels[sorted_indices]
 
 # TODO: these arrays should be filled with predicted values
 TEST_labels = np.empty((0, 1))
-"""
+# finding k nearest neighbors for test chips and printing OK or fail
 for k in k_values:
     closest_neighbour = []
     print("K value = {}".format(k))
@@ -59,13 +60,12 @@ for k in k_values:
         new_value = np.array([[closest_neighbour[i] if k == 1 else prediction]])
         TEST_labels = np.vstack([TEST_labels, new_value])
         print(f"chip{i + 1}: [{coords_str}] ==> {label}")
-
 print(TEST_labels)
-"""
+
 x_min, x_max = TRAIN_data[:, 0].min() - 0.1, TRAIN_data[:, 0].max() + 0.1
 y_min, y_max = TRAIN_data[:, 1].min() - 0.1, TRAIN_data[:, 1].max() + 0.1
 
-## create meshgird wwith a step of 0.05
+## create meshgird with a step of 0.01
 xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01), np.arange(y_min, y_max, 0.01))
 xx_flat = xx.ravel()
 yy_flat = yy.ravel()
@@ -76,12 +76,12 @@ distances = np.sqrt(np.sum((meshgrid_array[:, np.newaxis, :] - TRAIN_data) ** 2,
 sorted_distances = np.sort(distances, axis=1)
 sorted_indices = np.argsort(distances, axis=1)
 sorted_labels = TRAIN_labels[sorted_indices]
-print(sorted_labels.shape)
 
 meshgrid_array_full = np.zeros((len(distances), 6))
 meshgrid_array_full[:, 0] = xx_flat
 meshgrid_array_full[:, 1] = yy_flat
 counter = 0
+# finding k nearest neighbors mesh grid points
 for k in k_values:
     closest_neighbour = []
     labels_temp = np.empty(len(meshgrid_array))
@@ -98,23 +98,28 @@ for k in k_values:
     meshgrid_array_full[:, counter + 2] = labels_temp.flatten()
     counter = counter + 1
 
-print(meshgrid_array_full.shape)
-'''''
-fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
-for k, ax in zip(k_values, axs.flatten()):
-    ax.contourf(xx, yy, TRAIN_labels, cmap=plt.cm.Paired)
-    ax.scatter(TRAIN_data[:, 0], TRAIN_data[:, 1], c=TRAIN_labels, cmap=plt.cm.Paired, edgecolors= 'k')
-'''''
 
+
+# plotting 4 subplots with their decision boundary, based on the KNN for each
+# point in the mesh area
+start_val = 2
+starting_ax = 1
 x = meshgrid_array_full[:, 0]
 y = meshgrid_array_full[:, 1]
-
-knn = meshgrid_array_full[:, 3]
-
-mask = knn == 1
-
-
-plt.scatter(x[mask], y[mask], c="blue", label="OK")
-plt.scatter(x[~mask], y[~mask], c="red", label="FAIL")
-plt.legend()
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(15, 15))
+axes = [ax1, ax2, ax3, ax4]
+for i, k in enumerate(k_values):
+    knn = meshgrid_array_full[:, start_val]
+    mask_knn_1 = knn == 1
+    mask_knn_0 = knn == 0
+    ax = axes[i]
+    ax.scatter(x[mask_knn_1], y[mask_knn_1], c="orange", label="OK")
+    ax.scatter(x[mask_knn_0], y[mask_knn_0], c="blue", label="FAIL")
+    for value in set(okOrFailedVector):
+        mask = value == okOrFailedVector
+        ax.scatter(xdata[mask], ydata[mask], marker=markers[value])
+    ax.set_title("K =" + str(k))
+    ax.legend()
+    start_val = start_val + 1
+plt.subplots_adjust(hspace=0.3, wspace=0.3)
 plt.show()
