@@ -13,7 +13,6 @@ def knn(k_values, minuend_data, subtrahend_data):
     array_full[:, 1] = minuend_data[:, 1]
     counter = 0
     for k in k_values:
-        closest_neighbour = []
         labels_temp = np.empty(len(distances))  # this needs to be changed
         for i in range(len(distances)):
             if k == 1:
@@ -118,7 +117,8 @@ for i, k in enumerate(k_values):
     for value in set(okOrFailedVector):
         mask = value == okOrFailedVector
         ax.scatter(xdata[mask], ydata[mask], marker=markers[value])
-    ax.set_title("K =" + str(k) + " ,Training errors: " + str(num_diff))
+    ax.set_title("K =" + str(k) + " ,Training errors: "
+                 + str(num_diff))
     ax.legend()
     start_val = start_val + 1
 plt.subplots_adjust(hspace=0.3, wspace=0.3)
