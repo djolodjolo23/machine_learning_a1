@@ -109,97 +109,30 @@ def knn(k_values, minuend_data, subtrahend_data):
         counter = counter + 1
     return array_full
 
-distances = knn(k_values, train_data, train_data)
-sorted_distances = np.sort(distances, axis=1)
-indices = np.argsort(distances, axis=1)
-sorted_y_values = y[indices]
 
-# sorting the y values for k = 1
-ydata = distances[:, 0] # here 0 determines the first column in the result array for k=1
-#sorted_y = [ydata[i] for i in indices]
-#sorted_x = [x[i] for i in sorted_indices]
-
-#slope, intercept, r_value, p_value, std_err = linregress()
+train_distances = knn(k_values, train_data, train_data)
+test_distances = knn(k_values, test_data, test_data)
 
 
-#plt.plot(sorted_x, sorted_y)
-plt.scatter(x, ydata, color='blue', label='Points')
-
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Polynomial curve through x and y coordinates')
-
+fig, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(nrows=3, ncols=2, figsize=(15, 15))
+axes = [ax1, ax2, ax3, ax4, ax5, ax6]
+for i, k in enumerate(k_values):
+    ax = axes[i]
+    x_train = x
+    y_train = train_distances[:, i]
+    x_test = test_data[:, 0]
+    y_test = test_data[:, 1]
+    sort_idx = np.argsort(x_train)
+    x_train_sorted = x_train[sort_idx]
+    y_train_sorted = y_train[sort_idx]
+    degree = 100
+    z = np.polyfit(x, y_train, degree)
+    p = np.poly1d(z)
+    y_fit = p(x_train_sorted)
+    window_size = 2
+    y_fit_smooth = savgol_filter(y_fit, window_size, 1)
+    ax.plot(x_train_sorted, y_train_sorted, 'o')
+    ax.plot(x_train_sorted, y_fit_smooth, label='Fitted function')
+    ax.set_title("K =" + str(k) + " ,Training errors: ")
+plt.subplots_adjust(hspace=0.3, wspace=0.3)
 plt.show()
-x_train = x
-y_train = ydata
-x_test = test_data[:, 0]
-y_test = test_data[:, 1]
-
-sort_idx = np.argsort(x_train)
-x_train_sorted = x_train[sort_idx]
-y_train_sorted = y_train[sort_idx]
-
-degree = 100
-
-z = np.polyfit(x, ydata, degree)
-
-p = np.poly1d(z)
-y_fit = p(x_train_sorted)
-
-window_size = 4
-y_fit_smooth = savgol_filter(y_fit, window_size, 3)
-plt.plot(x_train_sorted, y_train_sorted, 'o')
-#plt.plot(x_test, y_test, 'o')
-plt.plot(x_train_sorted, y_fit_smooth, label='Fitted function')
-plt.show()
-
-'''''
-poly = PolynomialFeatures(degree=10)
-train_X_poly = poly.fit_transform(x_train.reshape(-1, 1))
-test_X_poly = poly.transform(x_test.reshape(-1, 1))
-
-# fit a linear regression model to the train polynomial features
-model = LinearRegression()
-model.fit(train_X_poly, y_train)
-
-# predict using the fitted model on both train and test sets
-train_y_pred = model.predict(train_X_poly)
-test_y_pred = model.predict(test_X_poly)
-
-sort_idx = np.argsort(x_train)
-x_train_sorted = x_train[sort_idx]
-train_y_pred_sorted = train_y_pred[sort_idx]
-
-# plot the original train and test data and the fitted function
-plt.scatter(x_train, y_train, label='Train data')
-plt.scatter(x_test, y_test, label='Test data')
-plt.plot(x_train_sorted, train_y_pred_sorted, label='Fitted function')
-plt.legend()
-plt.show()
-'''
-
-'''''
-# knn prediction for (f)x
-results = np.zeros((len(distances), 6))
-counter = 0
-for k in k_values:
-    closest_neighbour = []
-    labels_temp = np.empty(len(distances))
-    for i in range(len(train_data)):
-        if k == 1:
-            closest_neighbour = sorted_y_values[:, k]
-        else:
-            closest_neighbour = sorted_y_values[:, :k]
-            prediction = knn_predict_y(closest_neighbour)
-        labels_temp[i] = closest_neighbour[i] if k == 1 else prediction
-    results[:, counter] = labels_temp.flatten()
-    counter = counter + 1
-
-
-# Get corresponding x and y values for the closest point
-#nearest_y = y[nearest_indices]  # corresponding y values for the k nearest neighbors
-#predicted_y = np.mean(nearest_y, axis=1)
-'''
-
-
-
