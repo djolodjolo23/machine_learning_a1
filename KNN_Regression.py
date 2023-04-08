@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from scipy.signal import savgol_filter
-
+from sklearn.metrics import mean_squared_error
 
 
 def knn_predict_y(arr):
@@ -129,10 +129,12 @@ for i, k in enumerate(k_values):
     z = np.polyfit(x, y_train, degree)
     p = np.poly1d(z)
     y_fit = p(x_train_sorted)
+    y_predicted = np.polyval(p, x_test)
+    mse = mean_squared_error(y_test, y_predicted)
     window_size = 2
     y_fit_smooth = savgol_filter(y_fit, window_size, 1)
     ax.plot(x_train_sorted, y_train_sorted, 'o')
     ax.plot(x_train_sorted, y_fit_smooth, label='Fitted function')
-    ax.set_title("K =" + str(k) + " ,Training errors: ")
+    ax.set_title("K = " + str(k) + " , MSE: " + str(mse))
 plt.subplots_adjust(hspace=0.3, wspace=0.3)
 plt.show()
