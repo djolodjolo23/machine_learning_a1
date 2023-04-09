@@ -19,13 +19,11 @@ def calculate_regression(k_value):
 
 
 def predict(current_x, k_value):
-    # All distances to the points in train data
-    # from a single x point in test data
     distance = np.abs(x - current_x)
     sorted_indices = np.argsort(distance)
     points = np.empty(shape=(0, 2))
-    for i in range(k_value):
-        closest_point_index = sorted_indices[i]
+    for k_value in range(k_value):
+        closest_point_index = sorted_indices[k_value]
         point = (x[closest_point_index], y[closest_point_index])
         points = np.append(points, [[point[0], point[1]]], axis=0)
     predicted_y = knn_predict_y(points)
