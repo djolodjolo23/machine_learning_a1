@@ -61,8 +61,9 @@ ax2.set_ylabel('Y')
 plt.show()
 '''
 
-x = train_data[:, 0]
-y = train_data[:, 1]
+#
+x_train = x = train_data[:, 0]
+y_train = y = train_data[:, 1]
 
 
 x_test = test_data[:, 0]
@@ -71,8 +72,7 @@ sort = np.argsort(x_test)
 x_test_sorted = x_test[sort]
 y_test_sorted = y_test[sort]
 
-x_train = x
-y_train = y
+
 sort_idx = np.argsort(x_train)
 x_train_sorted = x_train[sort_idx]
 y_train_sorted = y_train[sort_idx]
