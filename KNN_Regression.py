@@ -43,7 +43,7 @@ polynomial = polynomial[indices]
 train_data, test_data = np.split(polynomial, 2)
 
 # plotting the original data into two
-'''''
+
 fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(10, 10))
 
 ax1.scatter(train_data[:, 0], train_data[:, 1])
@@ -57,7 +57,7 @@ ax2.set_xlabel('X')
 ax2.set_ylabel('Y')
 
 plt.show()
-'''
+
 
 #
 x_train = x = train_data[:, 0]
