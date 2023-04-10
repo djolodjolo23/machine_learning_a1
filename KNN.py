@@ -5,7 +5,6 @@ from matplotlib import pyplot as plt
 
 def knn(k_values, minuend_data, subtrahend_data):
     distances = np.sqrt(np.sum((minuend_data[:, np.newaxis, :] - subtrahend_data) ** 2, axis=-1))
-    sorted_distances = np.sort(distances, axis=1)
     sorted_indices = np.argsort(distances, axis=1)
     sorted_labels = TRAIN_labels[sorted_indices]
     array_full = np.zeros((len(distances), 6))

@@ -75,6 +75,7 @@ sort_idx = np.argsort(x_train)
 x_train_sorted = x_train[sort_idx]
 y_train_sorted = y_train[sort_idx]
 
+'''''
 fig, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(nrows=3, ncols=2, figsize=(15, 15))
 axes = [ax1, ax2, ax3, ax4, ax5, ax6]
 for i, k in enumerate(k_values):
@@ -90,3 +91,4 @@ for i, k in enumerate(k_values):
     ax.set_title("K = " + str(k) + " , MSE: " + str(rounded_mse))
 plt.subplots_adjust(hspace=0.3, wspace=0.3)
 plt.show()
+'''
