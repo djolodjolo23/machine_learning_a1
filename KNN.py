@@ -4,14 +4,14 @@ from matplotlib import pyplot as plt
 
 def classify_x_test_and_print(k_values):
     for k_value in k_values:
-        print("K value = {}".format(k))
+        print("K value = {}".format(k_value))
         for i in range(len(TEST_data)):
             coords_str = ', '.join([f"{coord: 0.1f}" for coord in TEST_data[i]])
             if k_value == 1:
                 closest_neighbour = sorted_labels[:, k_value - 1]
                 label = "OK" if closest_neighbour[i] == 1 else "FAIL"
             else:
-                closest_neighbour = sorted_labels[:, :k]
+                closest_neighbour = sorted_labels[:, :k_value]
                 prediction = majority_vote(closest_neighbour[i])
                 label = "OK" if prediction == 1 else "FAIL"
             print(f"chip{i + 1}: [{coords_str}] ==> {label}")

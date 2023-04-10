@@ -10,12 +10,7 @@ def knn_predict_y(arr):
 
 
 def calculate_regression(k_value):
-    points_regression = np.empty(shape=(0, 2))
-    for coordinates in test_data:
-        current_x = coordinates[0]
-        predicted_point = predict(current_x, k_value)
-        points_regression = np.append(points_regression, [predicted_point], axis=0)
-    return points_regression
+    return np.array([predict(coordinates[0], k_value) for coordinates in test_data]).reshape(-1, 2)
 
 
 def predict(current_x, k_value):
@@ -75,7 +70,7 @@ sort_idx = np.argsort(x_train)
 x_train_sorted = x_train[sort_idx]
 y_train_sorted = y_train[sort_idx]
 
-'''''
+
 fig, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(nrows=3, ncols=2, figsize=(15, 15))
 axes = [ax1, ax2, ax3, ax4, ax5, ax6]
 for i, k in enumerate(k_values):
@@ -91,4 +86,3 @@ for i, k in enumerate(k_values):
     ax.set_title("K = " + str(k) + " , MSE: " + str(rounded_mse))
 plt.subplots_adjust(hspace=0.3, wspace=0.3)
 plt.show()
-'''

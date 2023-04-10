@@ -4,6 +4,8 @@ from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
+import tensorflow as tf
+
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 microchips = pd.read_csv('A1_datasets/microchips.csv', header=None)
