@@ -2,6 +2,19 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
+def classify_x_test_and_print(k_values):
+    for k_value in k_values:
+        print("K value = {}".format(k))
+        for i in range(len(TEST_data)):
+            coords_str = ', '.join([f"{coord: 0.1f}" for coord in TEST_data[i]])
+            if k_value == 1:
+                closest_neighbour = sorted_labels[:, k_value - 1]
+                label = "OK" if closest_neighbour[i] == 1 else "FAIL"
+            else:
+                closest_neighbour = sorted_labels[:, :k]
+                prediction = majority_vote(closest_neighbour[i])
+                label = "OK" if prediction == 1 else "FAIL"
+            print(f"chip{i + 1}: [{coords_str}] ==> {label}")
 
 def knn(k_values, minuend_data, subtrahend_data):
     distances = np.sqrt(np.sum((minuend_data[:, np.newaxis, :] - subtrahend_data) ** 2, axis=-1))
@@ -62,25 +75,7 @@ distances = np.sqrt(np.sum((TEST_data[:, np.newaxis, :] - TRAIN_data) ** 2, axis
 sorted_indices = np.argsort(distances, axis=1)
 sorted_labels = TRAIN_labels[sorted_indices]
 
-# TODO: these arrays should be filled with predicted values
-TEST_labels = np.empty((0, 1))
-# finding k nearest neighbors for test chips and printing OK or fail
-for k in k_values:
-    closest_neighbour = []
-    print("K value = {}".format(k))
-    for i in range(len(TEST_data)):
-        coords_str = ', '.join([f"{coord: 0.1f}" for coord in TEST_data[i]])
-        if k == 1:
-            closest_neighbour = sorted_labels[:, k - 1]
-            label = "OK" if closest_neighbour[i] == 1 else "FAIL"
-        else:
-            closest_neighbour = sorted_labels[:, :k]
-            prediction = majority_vote(closest_neighbour[i])
-            label = "OK" if prediction == 1 else "FAIL"
-        new_value = np.array([[closest_neighbour[i] if k == 1 else prediction]])
-        TEST_labels = np.vstack([TEST_labels, new_value])
-        print(f"chip{i + 1}: [{coords_str}] ==> {label}")
-print(TEST_labels)
+classify_x_test_and_print(k_values)
 
 x_min, x_max = TRAIN_data[:, 0].min() - 0.1, TRAIN_data[:, 0].max() + 0.1
 y_min, y_max = TRAIN_data[:, 1].min() - 0.1, TRAIN_data[:, 1].max() + 0.1
